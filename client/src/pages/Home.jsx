@@ -6,6 +6,9 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ Your Render backend URL
+  const API_URL = "https://youtube-video-to-audio-downloader-1.onrender.com";
+
   // Extract video ID
   const extractVideoId = (url) => {
     const regExp =
@@ -36,7 +39,7 @@ export default function Home() {
       setLoading(true);
       setError("");
 
-      const response = await fetch("http://localhost:5000/api/download", {
+      const response = await fetch(`${API_URL}/api/download`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
