@@ -6,7 +6,7 @@ export default function Home() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Extract YouTube video ID
+  // Extract video ID
   const extractVideoId = (url) => {
     const regExp =
       /(?:youtube\.com\/(?:.*v=|.*\/)|youtu\.be\/)([^"&?\/\s]{11})/;
@@ -14,8 +14,8 @@ export default function Home() {
     return match ? match[1] : null;
   };
 
-  // Handle preview
-  const handleSubmit = () => {
+  // Preview thumbnail
+  const handlePreview = () => {
     setError("");
     const videoId = extractVideoId(url);
 
@@ -25,11 +25,10 @@ export default function Home() {
       return;
     }
 
-    const thumbUrl = `https://img.youtube.com/vi/${videoId}/0.jpg`;
-    setThumbnail(thumbUrl);
+    setThumbnail(`https://img.youtube.com/vi/${videoId}/0.jpg`);
   };
 
-  // Handle download
+  // Download audio
   const handleDownload = async () => {
     if (!url) return;
 
@@ -45,8 +44,6 @@ export default function Home() {
         body: JSON.stringify({ url }),
       });
 
-      console.log("Status:", response.status);
-
       if (!response.ok) {
         const text = await response.text();
         console.error("Backend error:", text);
@@ -59,7 +56,7 @@ export default function Home() {
         throw new Error("Empty file received");
       }
 
-      // Extract filename from headers (if available)
+      // ✅ Get filename from backend
       let filename = "audio.mp3";
       const disposition = response.headers.get("content-disposition");
 
@@ -78,12 +75,11 @@ export default function Home() {
       a.click();
       a.remove();
 
-      // Cleanup URL
       window.URL.revokeObjectURL(downloadUrl);
 
     } catch (err) {
       console.error(err);
-      setError("Download failed. Check backend or yt-dlp setup.");
+      setError("Download failed. Check backend setup.");
     } finally {
       setLoading(false);
     }
@@ -105,7 +101,7 @@ export default function Home() {
         </h2>
 
         <p className="text-gray-400 mb-8">
-          Paste a link and download audio instantly
+          Paste a link, preview, and download audio
         </p>
 
         {/* Input */}
@@ -119,7 +115,7 @@ export default function Home() {
           />
 
           <button
-            onClick={handleSubmit}
+            onClick={handlePreview}
             className="bg-blue-500 hover:bg-blue-600 px-5 py-2 rounded-lg font-medium"
           >
             Preview
